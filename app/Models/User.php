@@ -54,6 +54,7 @@ class User extends Authenticatable
 
     public function roles()
     {
+        return $this->belongsToMany(Role::class);
     }
 
     public function assignRoles()
@@ -62,9 +63,11 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
+        return $this->roles()->where('name', 'Admin')->exists();
     }
 
     public function isUser()
     {
+        return $this->roles()->where('name', 'User')->exists();
     }
 }
