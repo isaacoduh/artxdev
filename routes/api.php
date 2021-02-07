@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,5 +16,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
+    Log::debug('User:', serialize($request->user()));
     return $request->user();
+});
+
+Route::get('version', function () {
+    return response()->json(['version' => config('app.version')]);
+});
+
+
+Route::namespace('App\\Http\\Controllers\\API')->group(function () {
+    Route::get('profile', 'ProfileController@profile');
+    Route::put('profile', 'ProfileController@updateProfile');
+    Route::post('change-password', 'ProfileController@changePassword');
 });
