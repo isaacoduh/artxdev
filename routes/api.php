@@ -30,6 +30,9 @@ Route::namespace('App\\Http\\Controllers\\API')->group(function () {
     Route::put('profile', 'ProfileController@updateProfile');
     Route::post('change-password', 'ProfileController@changePassword');
     Route::get('tag/list', 'TagController@list');
+    Route::get('category/list', 'CategoryController@list');
 
     Route::apiResource('tag', 'TagController');
+    Route::apiResource('category', 'CategoryController');
+    Route::apiResource('user', 'UserController');
 });

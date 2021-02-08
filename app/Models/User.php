@@ -57,8 +57,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function assignRoles()
+    public function assignRoles(Role $role)
     {
+        return $this->roles()->save($role);
     }
 
     public function isAdmin()
