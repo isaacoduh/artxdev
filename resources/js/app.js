@@ -33,15 +33,16 @@ window.Toast = Toast;
 
 import VueProgressBar from "vue-progressbar";
 Vue.use(VueProgressBar, {
-    color: "rgb(120,230,189)",
+    color: "rgb(143, 255, 199)",
     failedColor: "red",
     height: "3px"
 });
+
 Vue.component(HasError.name, HasError);
 Vue.component(AlertError.name, AlertError);
 
 /**
- * Routes import and assigning
+ * Routes imports and assigning
  */
 import VueRouter from "vue-router";
 Vue.use(VueRouter);
@@ -51,6 +52,7 @@ const router = new VueRouter({
     mode: "history",
     routes
 });
+// Routes End
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -79,7 +81,8 @@ Vue.component(
 
 Vue.component("not-found", require("./components/NotFound.vue").default);
 
-// Filter section
+// Filter Section
+
 Vue.filter("myDate", function(created) {
     return moment(created).format("MMMM Do YYYY");
 });
@@ -88,6 +91,13 @@ Vue.filter("yesno", value =>
     value ?
     '<i class="fas fa-check green"></i>' :
     '<i class="fas fa-times red"></i>'
+);
+
+// end Filter
+
+Vue.component(
+    "example-component",
+    require("./components/ExampleComponent.vue")
 );
 
 const app = new Vue({
