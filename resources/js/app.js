@@ -60,7 +60,7 @@ const router = new VueRouter({
 
 // Components
 Vue.component("pagination", require("laravel-vue-pagination"));
-// Vue.component('dashboard', require('./components/Dashboard.vue'));
+Vue.component("dashboard", require("./components/Dashboard.vue"));
 
 Vue.component(
     "passport-clients",
