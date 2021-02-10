@@ -15,14 +15,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('version', function () {
+    return response()->json(['version' => config('app.version')]);
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     Log::debug('User:', serialize($request->user()));
     return $request->user();
 });
 
-Route::get('version', function () {
-    return response()->json(['version' => config('app.version')]);
-});
+
 
 
 Route::namespace('App\\Http\\Controllers\\API')->group(function () {
@@ -31,8 +33,10 @@ Route::namespace('App\\Http\\Controllers\\API')->group(function () {
     Route::post('change-password', 'ProfileController@changePassword');
     Route::get('tag/list', 'TagController@list');
     Route::get('category/list', 'CategoryController@list');
+    Route::post('product/upload', 'ProductController@upload');
 
     Route::apiResource('tag', 'TagController');
     Route::apiResource('category', 'CategoryController');
     Route::apiResource('user', 'UserController');
+    Route::apiResource('product', 'ProductController');
 });

@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Requests\Products\ProductRequest;
+use App\Models\Product;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class ProductController extends BaseController
+{
+    protected $product = '';
+
+    public function __construct(Product $product)
+    {
+        $this->middleware('auth:api');
+        $this->product = $product;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $products = $this->product->latest()->with('category', 'tags')->paginate(10);
+        return $this->sendResponse($products, 'Product List');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  App\Http\Requests\Products\ProductRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(ProductRequest $request)
+    {
+        $product = $this->product->create([
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'price' => $request->get('price'),
+            'category_id' => $request->get('category_id'),
+        ]);
+
+        //update pivot table
+        $tag_ids = [];
+        foreach ($request->get('tags') as $tag) {
+            $tag_ids[] = $tag['id'];
+        }
+        $product->tags()->sync($tag_ids);
+        return $this->sendResponse($product, 'Product information created!');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $product = $this->product->with(['category', 'tags'])->findOrFail($id);
+        return $this->sendResponse($product, 'Product Information');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+
+    public function update(ProductRequest $request, $id)
+    {
+        $product = $this->product->findOrFail($id);
+        $product->update($request->all());
+
+        // update pivot table
+        $tag_ids = [];
+        foreach ($request->get('tags') as $tag) {
+            $tag_ids[] = $tag['id'];
+        }
+        $product->tags()->async($tag_ids);
+        return $this->sendResponse($product, 'Product Information updated!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $this->authorize('isAdmin');
+        $product = $this->product->findOrFail($id);
+        $product->delete();
+        return $this->sendResponse($product, 'Product information deleted!');
+    }
+
+    public function upload(Request $request)
+    {
+        $filename = time() . '.' . $request->file->getClientOriginalExtension();
+        $request->file->move(public_path('upload'), $filename);
+        return response()->json(['success' => true]);
+    }
+}
