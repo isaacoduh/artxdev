@@ -82,7 +82,7 @@ class ProductController extends BaseController
         foreach ($request->get('tags') as $tag) {
             $tag_ids[] = $tag['id'];
         }
-        $product->tags()->async($tag_ids);
+        $product->tags()->sync($tag_ids);
         return $this->sendResponse($product, 'Product Information updated!');
     }
 
