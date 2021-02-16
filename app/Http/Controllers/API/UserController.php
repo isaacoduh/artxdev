@@ -28,7 +28,7 @@ class UserController extends BaseController
      */
     public function index()
     {
-        if (Gate::allows('isAdmin')) {
+        if (!Gate::allows('isAdmin')) {
             return $this->unauthorizedResponse();
         }
 
